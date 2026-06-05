@@ -134,9 +134,71 @@ RNOFLO  LEA R0, ERRRNG          ; reuse the range message for overflow
         BR RNSTART
 
 ; PRINTNUM (Tyla) - R0 (0-100) in, decimal digits out
-; Use the Part 1 pseudocode. PUSH R7 + regs used, POP before RET
-; FYI my READNUM labels from previous code are RN + role (RNSTART, RNLOOP, RNDONE)
-PRINTNUM RET                    ; stub for printnum
+; PUSH R7 + regs used, POP before RET
+; PRINTNUM (Tyla) - print the unsigned integer in R0 as decimal text
+; Input:  R0 = number from 0 to 100
+; Output: prints the number using OUT
+; Uses:   R1-R4, R7
+; Stack:  saves/restores all registers it modifies so the caller is unaffected
+
+PRINTNUM ADD R6, R6, #-1         ; Push R7 first so RET still works after nested calls
+        STR R7, R6, x0          ; Save return address
+
+        ADD R6, R6, #-1         ; Save R1
+        STR R1, R6, x0
+
+        ADD R6, R6, #-1         ; Save R2
+        STR R2, R6, x0
+
+        ADD R6, R6, #-1         ; Save R3
+        STR R3, R6, x0
+
+        ADD R6, R6, #-1         ; Save R4
+        STR R4, R6, x0
+
+        ADD R1, R0, x0          ; Copy input value into R1 so we can modify it safely
+        LD R2, NEGNL            ; R2 = -10, used to subtract 10 repeatedly
+        AND R3, R3, x0          ; R3 = quotient, start at 0
+
+; Divide by 10 using repeated subtraction.
+; After this loop:
+;   R1 = remainder (ones digit)
+;   R3 = quotient  (tens digit or 0)
+PNDIV   ADD R4, R1, R2          ; Try subtracting 10: R4 = R1 - 10
+        BRn PNDONE              ; If negative, R1 was less than 10, stop dividing
+        ADD R1, R4, x0          ; Keep the reduced value in R1
+        ADD R3, R3, x1          ; Increase quotient by 1
+        BR PNDIV                ; Repeat until remainder < 10
+
+; If the quotient is 0, the number is a single digit.
+; Otherwise, print the quotient first, then print the remainder.
+PNDONE  ADD R4, R3, x0          ; Copy quotient so we can test it
+        BRz PNONE               ; If quotient == 0, skip recursive print
+
+        ADD R0, R4, x0          ; Put quotient into R0
+        JSR PRINTNUM            ; Recursively print the tens part first
+
+; Convert the remainder digit to ASCII and print it.
+PNONE   LD R2, ASCZERO          ; R2 = ASCII value for '0'
+        ADD R0, R1, R2          ; Convert numeric digit to ASCII
+        OUT                     ; Print the final digit
+
+; Restore registers in reverse order of saving them.
+        LDR R4, R6, x0          ; Restore R4
+        ADD R6, R6, x1
+
+        LDR R3, R6, x0          ; Restore R3
+        ADD R6, R6, x1
+
+        LDR R2, R6, x0          ; Restore R2
+        ADD R6, R6, x1
+
+        LDR R1, R6, x0          ; Restore R1
+        ADD R6, R6, x1
+
+        LDR R7, R6, x0          ; Restore return address
+        ADD R6, R6, x1
+        RET                     ; Return to caller
 
 ; DATA - RUBRIC #1 (constants, pointer slots, strings)
 ; Constants up top so the subroutines can reach them with LD.
@@ -145,7 +207,7 @@ NEGZERO .FILL xFFD0             ; -'0' (-48) - subtract from a char to get the d
 NEGNINE .FILL xFFC7             ; -'9' (-57) - used to check char > '9'
 NEGNL   .FILL xFFF6             ; -'\n' (-10) - used to detect the ENTER key
 NEG100  .FILL xFF9C             ; -100 - for the 0-100 range check
-
+ASCZERO .FILL x0030				; ASCII code for '0'
 ; pointer slots - actual storage at known addresses (easy to view in simulator):
 ; x3200-x3207  ARRAY (the 8 user numbers, sorted in place)
 ; x3FF0-x4000  stack region (SP starts at x4000, grows down)
