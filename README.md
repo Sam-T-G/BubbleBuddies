@@ -38,7 +38,7 @@ An LC-3 assembly implementation of bubble sort. The program prompts the user for
 
 Two subroutines do the per-number work. `READNUM` reads one integer from the keyboard a character at a time until ENTER, validating range and digit characters. `PRINTNUM` prints one integer as decimal digits. The main program holds the input loop, the bubble sort, and the output loop. Each subroutine saves the registers it uses on entry and restores them before returning.
 
-Full design rationale lives in `PROJECTDOCUMENTATION.docx`.
+Full design rationale lives in `BubbleBuddiesDocumentation.pdf`.
 
 ## References
 
