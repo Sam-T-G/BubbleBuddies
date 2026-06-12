@@ -7,20 +7,21 @@
 
 ## Overview
 
-An LC-3 assembly implementation of the bubble sort algorithm. The program prompts the user for eight integers in the range 0–100, sorts them in ascending order using bubble sort, and prints the sorted result to the console.
+An LC-3 assembly implementation of bubble sort. The program prompts the user for eight integers in the range 0–100, sorts them in ascending order, and prints the result to the console.
 
 ## Repository contents
 
 | File | Purpose |
 |---|---|
-| `PROJECTDOCUMENTATION.docx` | Part 1 project documentation (objectives, business process, user roles, terminology, statement of functionality, scope, performance, usability, enhancement log, appendices, pseudocode, flowchart) |
-| `PROJECTDOCUMENTATION.tex` | LaTeX source for a PDF rendering of the documentation, generated from the same content as the `.docx` |
-| `flowchart.png` | Program flowchart (input loop, bubble sort, output loop, READNUM and PRINTNUM subroutines), embedded inside `PROJECTDOCUMENTATION.docx` |
-| `bubblebuddies.asm` *(coming with Part 3)* | The assembled LC-3 program |
+| `bubblebuddies.asm` | LC-3 source for the bubble sort program |
+| `PROJECTDOCUMENTATION.docx` | Project documentation: objectives, pseudocode, flowchart, design summary |
+| `PROJECTDOCUMENTATION.tex` | LaTeX source for the same documentation |
+| `BubbleBuddiesDocumentation.pdf` | PDF rendering of the documentation |
+| `flowchart.png` | Program flowchart, also embedded in the documentation |
 | `LICENSE` | MIT License |
 | `README.md` | This file |
 
-## How to run *(applies once Part 3 ships)*
+## How to run
 
 1. Open the LC-3 simulator used in CIS 11.
 2. Load `bubblebuddies.asm`, assemble, and start execution at `x3000`.
@@ -35,11 +36,9 @@ An LC-3 assembly implementation of the bubble sort algorithm. The program prompt
 
 ## Design summary
 
-- **Two subroutines:** `READNUM` reads one number from the keyboard one character at a time until ENTER is pressed; `PRINTNUM` prints one number to the screen as decimal digits. Each subroutine saves the registers it uses at the start and restores them before returning.
-- **In the main program:** the input loop (8 numbers), the bubble sort, and the output loop.
-- **Register use:** `R0` for values passed to and from subroutines and TRAPs; `R1` and `R2` for the two values being compared in the sort; `R3` for the comparison result; `R4` for the outer sort-loop counter; `R5` for the input, sort, and output loop counters; `R6` as the pointer that walks through the array; `R7` for the return address.
+Two subroutines do the per-number work. `READNUM` reads one integer from the keyboard a character at a time until ENTER, validating range and digit characters. `PRINTNUM` prints one integer as decimal digits. The main program holds the input loop, the bubble sort, and the output loop. Each subroutine saves the registers it uses on entry and restores them before returning.
 
-Full design rationale and rubric alignment live in `PROJECTDOCUMENTATION.docx`.
+Full design rationale lives in `PROJECTDOCUMENTATION.docx`.
 
 ## References
 
