@@ -1,8 +1,8 @@
 # BubbleBuddies — LC-3 Bubble Sort
 
-**Group:** Bubble Buddies
-**Members:** Samuel Gerungan, Tyla Robertson
-**Advisor:** Kasey Nguyen, PhD
+**Group:** Bubble Buddies  
+**Members:** Samuel Gerungan, Tyla Robertson  
+**Advisor:** Kasey Nguyen, PhD  
 **Course:** CIS 11 — Course Project
 
 ## Overview
